@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<section class="hgroup">
+		<h1>GTD List</h1>
+		<ul class="breadcrumb pull-right">
+			<li><a href="/">Home</a></li>
+			<li><a href="{% url 'gtd:index' %}">GTD</a></li>
+		</ul>
+	</section>
+	<form action="" method="post">
+		{% csrf_token %}
+		<p>Are you sure you want to delete List: {{ object.title }}?</p>
+		<input type="submit" value="Confirm" class="btn btn-danger">
+	</form>
+{% endblock content %}

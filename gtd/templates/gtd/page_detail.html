@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<section class="hgroup">
+		<h1>
+			{{ page.title }}
+			<div class="btn-group pull-right">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+					<span class="glyphicon glyphicon-cog"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="{% url 'gtd:page_update' page.slug %}">Edit</a></li>
+					<li><a href="{% url 'gtd:page_delete' page.slug %}">Delete</a></li>
+				</ul>
+			</div>
+		</h1>
+		<ul class="breadcrumb pull-right">
+			<li><a href="/">Home</a></li>
+			<li><a href="{% url 'gtd:index' %}">GTD</a></li>
+		</ul>
+	</section>
+	<section>
+		<form method="post" action="{% url 'gtd:task_add' %}" class="form-inline" id="taskInlineForm">
+			{% csrf_token %}
+			<input type="hidden" name="page" value="{{ page.id }}">
+			<div class="form-group">
+				<input type="text" name="description" id="form_description" class="form-control" placeholder="Task description...">
+			</div>
+			<button type="submit" class="btn btn-primary">Add Task</button>
+		</form>			
+		<ul class="list-group">
+			{% for task in page.open_tasks %}
+				<li class="list-group-item">
+					<a href="{% url 'gtd:task_handle' task.pk 'complete' %}" class="pull-left subtleLink"><span class="glyphicon glyphicon-unchecked" title="Complete">&nbsp;</span></a>
+					<a href="{% url 'gtd:task_upgrade' task.pk %}" class="pull-right subtleLink"><span class="glyphicon glyphicon-chevron-up" title="Move to top"></span></a>
+					{{ task.description }}
+				</li>
+			{% empty %}
+				<li class="list-group-item">No open tasks</li>
+			{% endfor %}
+			{% for task in page.completed_tasks %}
+				<li class="list-group-item completed-task">
+					<a href="{% url 'gtd:task_handle' task.pk 'undo' %}" class="pull-left subtleLink"><span class="glyphicon glyphicon-ok" title="Undo">&nbsp;</span></a>
+					<a href="{% url 'gtd:task_handle' task.pk 'delete' %}" class="pull-right subtleLink"><span class="glyphicon glyphicon-trash" title="Delete"></span></a>
+					{{ task.description }}
+				</li>
+			{% empty %}
+				<li class="list-group-item completed-task">You haven't completed any tasks yet. Get to work!</li>
+			{% endfor %}
+		</ul>
+		
+	</section>
+{% endblock %}
+
+{% block script %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#form_description').focus();
+	    });
+	</script>
+{% endblock script %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<section class="hgroup">
+		<h1>GTD Lists</h1>
+	</section>
+	<section>
+		<a href="{% url 'gtd:page_add' %}" class="btn btn-primary">Add New</a>
+		{% for page in pages_list %}
+			<h3>
+				<a href="{% url 'gtd:page_detail' page.slug %}">{{ page.title }}</a>	
+				<small>{{ page.next_action }}</small>				
+			</h3>
+		{% empty %}
+			<p>No pages found</p>
+		{% endfor %}
+	</section>
+{% endblock %}
